@@ -1,4 +1,5 @@
 import { put, select, takeLatest } from "redux-saga/effects";
+import gameLoop from "../gameLoop/gameLoop";
 
 function* moveCharacter(action) {
   const { character } = yield select();
@@ -11,7 +12,7 @@ function* moveCharacter(action) {
   ) {
     yield put({
       type: "MOVE_CHARACTER",
-      payload: { delta: action.payload.delta }
+      payload: { frameDelta: action.payload.frameDelta }
     });
   } else {
     const x = Math.floor(Math.random() * Math.floor(800));
@@ -25,5 +26,5 @@ function* moveCharacter(action) {
 }
 
 export default function* characterSaga() {
-  yield takeLatest("GAME_TICK", moveCharacter);
+  yield takeLatest(gameLoop, moveCharacter);
 }

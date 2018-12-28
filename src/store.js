@@ -1,17 +1,16 @@
-import { applyMiddleware, createStore, combineReducers } from "redux";
+import { applyMiddleware, compose, createStore, combineReducers } from "redux";
 import characterReducer from "./character/characterReducer";
-import timerReducer from "./timer/timerReducer";
 import createSagaMiddleware from "redux-saga";
 import rootSaga from "./rootSaga";
 
 const sagaMiddleware = createSagaMiddleware();
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default createStore(
   combineReducers({
-    character: characterReducer,
-    timer: timerReducer
+    character: characterReducer
   }),
-  applyMiddleware(sagaMiddleware)
+  composeEnhancers(applyMiddleware(sagaMiddleware))
 );
 
 sagaMiddleware.run(rootSaga);

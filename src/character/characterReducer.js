@@ -19,32 +19,37 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function handleSetTargetPosition(state, action) {
+  return {
+    ...state,
+    startPosition: state.currentPosition,
+    targetPosition: action.payload,
+    currentJourneyTime: 0
+  };
+}
+
+function handleMoveCharacter(state, action) {
+  const { frameDelta } = action.payload;
+  const nextJourneyTime = state.currentJourneyTime + frameDelta;
+  const t = clamp(nextJourneyTime / CHARACTER_JOURNEY_TIME, 0, 1);
+  const nextPosition = Victor.fromObject(state.startPosition).mix(
+    state.targetPosition,
+    easeInOutQuad(t)
+  );
+
+  return {
+    ...state,
+    currentJourneyTime: nextJourneyTime,
+    currentPosition: nextPosition
+  };
+}
+
 export default function characterReducer(state = defaultState, action) {
   switch (action.type) {
     case "SET_TARGET_POSITION":
-      return {
-        ...state,
-        startPosition: state.currentPosition,
-        targetPosition: action.payload,
-        currentJourneyTime: 0
-      };
+      return handleSetTargetPosition(state, action);
     case "MOVE_CHARACTER":
-      const { delta } = action.payload;
-      const nextJourneyTime = state.currentJourneyTime + delta;
-      const positionDiff = Victor.fromObject(state.startPosition).subtract(
-        state.targetPosition
-      );
-      const t = clamp(nextJourneyTime / CHARACTER_JOURNEY_TIME, 0, 1);
-      const nextPosition = Victor.fromObject(state.startPosition).mix(
-        state.targetPosition,
-        easeInOutQuad(t)
-      );
-
-      return {
-        ...state,
-        currentJourneyTime: nextJourneyTime,
-        currentPosition: nextPosition
-      };
+      return handleMoveCharacter(state, action);
     default:
       return state;
   }
