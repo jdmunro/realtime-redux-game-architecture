@@ -7,11 +7,9 @@ function gameLoop() {
 
   return eventChannel(emitter => {
     const onAnimationFrame = timestamp => {
-      if (timestamp >= lastTimestamp + TIMESTEP) {
-        const frameDelta = (timestamp - lastTimestamp) / 1000;
-        lastTimestamp = timestamp;
-        emitter({ type: "GAME_TICK", payload: { frameDelta } });
-      }
+      const frameDelta = (timestamp - lastTimestamp) / 1000;
+      lastTimestamp = timestamp;
+      emitter({ type: "GAME_TICK", payload: { frameDelta } });
       window.requestAnimationFrame(onAnimationFrame);
     };
 
