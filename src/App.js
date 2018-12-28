@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
+import { setTargetPosition } from "./character/characterActions";
 
 class App extends Component {
   componentDidMount() {
@@ -18,7 +19,16 @@ class App extends Component {
 
     return (
       <div className="App">
-        <svg width="800" height="800" fill="red">
+        <svg
+          width="800"
+          height="800"
+          fill="red"
+          onClick={e => {
+            store.dispatch(
+              setTargetPosition(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+            );
+          }}
+        >
           <rect
             x={0}
             y={0}

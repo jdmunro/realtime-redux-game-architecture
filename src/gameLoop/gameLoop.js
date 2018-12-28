@@ -1,7 +1,5 @@
 import { eventChannel } from "redux-saga";
 
-const TIMESTEP: number = 1000 / 60;
-
 function gameLoop() {
   let lastTimestamp: number = 0;
 
