@@ -1,14 +1,26 @@
 import { put, select, takeLatest } from "redux-saga/effects";
 
-function* moveCharacter() {
+function* moveCharacter(action) {
   const { character } = yield select();
+  const currentPosition = character.currentPosition;
+  const targetPosition = character.targetPosition;
 
   if (
-    character.position.x !== character.target.x ||
-    character.position.y !== character.target.y
+    currentPosition.x !== targetPosition.x ||
+    currentPosition.y !== targetPosition.y
   ) {
-    yield put({ type: "MOVE_CHARACTER" });
-    console.log("moving character");
+    yield put({
+      type: "MOVE_CHARACTER",
+      payload: { delta: action.payload.delta }
+    });
+  } else {
+    const x = Math.floor(Math.random() * Math.floor(800));
+    const y = Math.floor(Math.random() * Math.floor(800));
+
+    yield put({
+      type: "SET_TARGET_POSITION",
+      payload: { x, y, startTime: new Date().getTime() }
+    });
   }
 }
 

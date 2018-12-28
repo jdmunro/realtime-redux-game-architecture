@@ -3,18 +3,33 @@ import "./App.css";
 import store from "./store";
 
 setInterval(() => {
-  store.dispatch({ type: "GAME_TICK" });
-}, 500);
+  const previousTimestamp = store.getState().timer;
+  const newTimestamp = new Date().getTime();
+
+  store.dispatch({
+    type: "GAME_TICK",
+    payload: {
+      timestamp: newTimestamp,
+      delta:
+        previousTimestamp !== 0 ? (newTimestamp - previousTimestamp) / 1000 : 0
+    }
+  });
+}, (1 / 60) * 1000);
 
 class App extends Component {
   componentDidMount() {
-    setInterval(() => this.forceUpdate(), (1 / 30) * 1000);
+    window.requestAnimationFrame(this.renderFrame);
   }
+
+  renderFrame = () => {
+    this.forceUpdate();
+    window.requestAnimationFrame(this.renderFrame);
+  };
 
   render() {
     const { store } = this.props;
     const state = store.getState();
-    const characterPosition = state.character.position;
+    const characterPosition = state.character.currentPosition;
 
     return (
       <div className="App">
